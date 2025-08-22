@@ -466,36 +466,6 @@ Name: count, dtype: int64</pre>
                 <div class="input_prompt">In&nbsp;[6]:</div>
                 <div class="input_area">
                     <div class="inner_cell">
-                        <pre><code># Calcular porcentajes
-total_songs = len(df)
-likes = df['liked'].sum()
-dislikes = total_songs - likes
-
-print(f"Total de canciones: {total_songs}")
-print(f"Me gusta: {likes} canciones ({likes/total_songs*100:.1f}%)")
-print(f"No me gusta: {dislikes} canciones ({dislikes/total_songs*100:.1f}%)")</code></pre>
-                    </div>
-                </div>
-            </div>
-            <div class="output_wrapper">
-                <div class="output">
-                    <div class="output_prompt"></div>
-                    <div class="output_area">
-                        <div class="output_subarea output_text output_result">
-                            <pre>Total de canciones: 195
-Me gusta: 100 canciones (51.3%)
-No me gusta: 95 canciones (48.7%)</pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="cell border-box-sizing code_cell rendered">
-            <div class="input">
-                <div class="input_prompt">In&nbsp;[7]:</div>
-                <div class="input_area">
-                    <div class="inner_cell">
                         <pre><code># Crear gráfico de barras para las preferencias
 plt.figure(figsize=(8, 6))
 likes_counts = df['liked'].value_counts()
@@ -519,29 +489,41 @@ plt.show()</code></pre>
             </div>
         </div>
 
-        <!-- Análisis de características -->
-        <div class="cell border-box-sizing text_cell rendered">
-            <div class="inner_cell">
-                <div class="text_cell_render rendered_html">
-                    <h2>Análisis de características musicales</h2>
-                </div>
-            </div>
-        </div>
-
         <div class="cell border-box-sizing code_cell rendered">
             <div class="input">
                 <div class="input_prompt">In&nbsp;[7]:</div>
                 <div class="input_area">
                     <div class="inner_cell">
-                        <pre><code># Calcular promedios por preferencia
-print("Promedio de características por preferencia:")
-print("\nDanceability:")
-print(f"Me gusta: {df[df['liked']==1]['danceability'].mean():.3f}")
-print(f"No me gusta: {df[df['liked']==0]['danceability'].mean():.3f}")
+                        <pre><code># Crear histogramas de características musicales
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+fig.suptitle('Distribución de Características Musicales')
 
-print("\nEnergy:")
-print(f"Me gusta: {df[df['liked']==1]['energy'].mean():.3f}")
-print(f"No me gusta: {df[df['liked']==0]['energy'].mean():.3f}")</code></pre>
+# Danceability
+axes[0,0].hist(df[df['liked']==1]['danceability'], alpha=0.7, label='Me gusta', color='#27ae60', bins=15)
+axes[0,0].hist(df[df['liked']==0]['danceability'], alpha=0.7, label='No me gusta', color='#e74c3c', bins=15)
+axes[0,0].set_title('Danceability')
+axes[0,0].legend()
+
+# Energy
+axes[0,1].hist(df[df['liked']==1]['energy'], alpha=0.7, label='Me gusta', color='#27ae60', bins=15)
+axes[0,1].hist(df[df['liked']==0]['energy'], alpha=0.7, label='No me gusta', color='#e74c3c', bins=15)
+axes[0,1].set_title('Energy')
+axes[0,1].legend()
+
+# Valence
+axes[1,0].hist(df[df['liked']==1]['valence'], alpha=0.7, label='Me gusta', color='#27ae60', bins=15)
+axes[1,0].hist(df[df['liked']==0]['valence'], alpha=0.7, label='No me gusta', color='#e74c3c', bins=15)
+axes[1,0].set_title('Valence')
+axes[1,0].legend()
+
+# Acousticness
+axes[1,1].hist(df[df['liked']==1]['acousticness'], alpha=0.7, label='Me gusta', color='#27ae60', bins=15)
+axes[1,1].hist(df[df['liked']==0]['acousticness'], alpha=0.7, label='No me gusta', color='#e74c3c', bins=15)
+axes[1,1].set_title('Acousticness')
+axes[1,1].legend()
+
+plt.tight_layout()
+plt.show()</code></pre>
                     </div>
                 </div>
             </div>
@@ -549,74 +531,15 @@ print(f"No me gusta: {df[df['liked']==0]['energy'].mean():.3f}")</code></pre>
                 <div class="output">
                     <div class="output_prompt"></div>
                     <div class="output_area">
-                        <div class="output_subarea output_text output_result">
-                            <pre>Promedio de características por preferencia:
-
-Danceability:
-Me gusta: 0.757
-No me gusta: 0.510
-
-Energy:
-Me gusta: 0.683
-No me gusta: 0.592</pre>
+                        <div class="output_subarea output_png output_result">
+                            <img src="grafico2_caracteristicas.png" alt="Histogramas de características">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="cell border-box-sizing code_cell rendered">
-            <div class="input">
-                <div class="input_prompt">In&nbsp;[8]:</div>
-                <div class="input_area">
-                    <div class="inner_cell">
-                        <pre><code># Calcular promedios para más características
-características = ['valence', 'acousticness', 'instrumentalness', 'speechiness']
-
-for característica in características:
-    me_gusta = df[df['liked']==1][característica].mean()
-    no_me_gusta = df[df['liked']==0][característica].mean()
-    diferencia = me_gusta - no_me_gusta
-    
-    print(f"\n{característica.capitalize()}:")
-    print(f"Me gusta: {me_gusta:.3f}")
-    print(f"No me gusta: {no_me_gusta:.3f}")
-    print(f"Diferencia: {diferencia:+.3f}")</code></pre>
-                    </div>
-                </div>
-            </div>
-            <div class="output_wrapper">
-                <div class="output">
-                    <div class="output_prompt"></div>
-                    <div class="output_area">
-                        <div class="output_subarea output_text output_result">
-                            <pre>
-Valence:
-Me gusta: 0.564
-No me gusta: 0.420
-Diferencia: +0.144
-
-Acousticness:
-Me gusta: 0.263
-No me gusta: 0.378
-Diferencia: -0.115
-
-Instrumentalness:
-Me gusta: 0.001
-No me gusta: 0.394
-Diferencia: -0.393
-
-Speechiness:
-Me gusta: 0.218
-No me gusta: 0.076
-Diferencia: +0.142</pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Análisis de Tempo -->
+        <!-- Análisis de tempo y duración -->
         <div class="cell border-box-sizing text_cell rendered">
             <div class="inner_cell">
                 <div class="text_cell_render rendered_html">
@@ -627,19 +550,17 @@ Diferencia: +0.142</pre>
 
         <div class="cell border-box-sizing code_cell rendered">
             <div class="input">
-                <div class="input_prompt">In&nbsp;[9]:</div>
+                <div class="input_prompt">In&nbsp;[8]:</div>
                 <div class="input_area">
                     <div class="inner_cell">
-                        <pre><code># Convertir duración a minutos para mejor comprensión
+                        <pre><code># Convertir duración a minutos y analizar tempo
 df['duration_min'] = df['duration_ms'] / 60000
 
-print("Análisis de duración:")
-print(f"Duración promedio (me gusta): {df[df['liked']==1]['duration_min'].mean():.2f} minutos")
-print(f"Duración promedio (no me gusta): {df[df['liked']==0]['duration_min'].mean():.2f} minutos")
-
-print("\nAnálisis de tempo:")
+print("Análisis de tempo y duración:")
 print(f"Tempo promedio (me gusta): {df[df['liked']==1]['tempo'].mean():.1f} BPM")
-print(f"Tempo promedio (no me gusta): {df[df['liked']==0]['tempo'].mean():.1f} BPM")</code></pre>
+print(f"Tempo promedio (no me gusta): {df[df['liked']==0]['tempo'].mean():.1f} BPM")
+print(f"Duración promedio (me gusta): {df[df['liked']==1]['duration_min'].mean():.2f} min")
+print(f"Duración promedio (no me gusta): {df[df['liked']==0]['duration_min'].mean():.2f} min")</code></pre>
                     </div>
                 </div>
             </div>
@@ -648,13 +569,93 @@ print(f"Tempo promedio (no me gusta): {df[df['liked']==0]['tempo'].mean():.1f} B
                     <div class="output_prompt"></div>
                     <div class="output_area">
                         <div class="output_subarea output_text output_result">
-                            <pre>Análisis de duración:
-Duración promedio (me gusta): 2.98 minutos
-Duración promedio (no me gusta): 4.16 minutos
-
-Análisis de tempo:
+                            <pre>Análisis de tempo y duración:
 Tempo promedio (me gusta): 131.2 BPM
-Tempo promedio (no me gusta): 110.4 BPM</pre>
+Tempo promedio (no me gusta): 110.4 BPM
+Duración promedio (me gusta): 2.98 min
+Duración promedio (no me gusta): 4.16 min</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[9]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Gráficos de tempo y duración
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# Tempo
+axes[0].hist(df[df['liked']==1]['tempo'], alpha=0.7, label='Me gusta', color='#27ae60', bins=20)
+axes[0].hist(df[df['liked']==0]['tempo'], alpha=0.7, label='No me gusta', color='#e74c3c', bins=20)
+axes[0].set_xlabel('Tempo (BPM)')
+axes[0].set_ylabel('Frecuencia')
+axes[0].set_title('Distribución de Tempo')
+axes[0].legend()
+
+# Duración
+axes[1].hist(df[df['liked']==1]['duration_min'], alpha=0.7, label='Me gusta', color='#27ae60', bins=20)
+axes[1].hist(df[df['liked']==0]['duration_min'], alpha=0.7, label='No me gusta', color='#e74c3c', bins=20)
+axes[1].set_xlabel('Duración (minutos)')
+axes[1].set_ylabel('Frecuencia')
+axes[1].set_title('Distribución de Duración')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_png output_result">
+                            <img src="grafico3_tempo_duracion.png" alt="Gráficos de tempo y duración">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[10]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Gráfico comparativo de características
+características = ['danceability', 'energy', 'valence', 'acousticness', 'instrumentalness']
+me_gusta_vals = [df[df['liked']==1][c].mean() for c in características]
+no_me_gusta_vals = [df[df['liked']==0][c].mean() for c in características]
+
+x = np.arange(len(características))
+width = 0.35
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars1 = ax.bar(x - width/2, me_gusta_vals, width, label='Me gusta', color='#27ae60')
+bars2 = ax.bar(x + width/2, no_me_gusta_vals, width, label='No me gusta', color='#e74c3c')
+
+ax.set_xlabel('Características')
+ax.set_ylabel('Promedio')
+ax.set_title('Comparación de Características Musicales')
+ax.set_xticks(x)
+ax.set_xticklabels(características, rotation=45)
+ax.legend()
+
+plt.tight_layout()
+plt.show()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_png output_result">
+                            <img src="grafico4_comparacion.png" alt="Gráfico comparativo de características">
                         </div>
                     </div>
                 </div>
@@ -672,7 +673,7 @@ Tempo promedio (no me gusta): 110.4 BPM</pre>
 
         <div class="cell border-box-sizing code_cell rendered">
             <div class="input">
-                <div class="input_prompt">In&nbsp;[10]:</div>
+                <div class="input_prompt">In&nbsp;[11]:</div>
                 <div class="input_area">
                     <div class="inner_cell">
                         <pre><code>print("=== CONCLUSIONES DEL ANÁLISIS ===")
@@ -684,27 +685,18 @@ print(f"   - {len(df)-df['liked'].sum()} no me gustan ({(len(df)-df['liked'].sum
 print("\n2. CARACTERÍSTICAS QUE MÁS ME GUSTAN:")
 dance_diff = df[df['liked']==1]['danceability'].mean() - df[df['liked']==0]['danceability'].mean()
 valence_diff = df[df['liked']==1]['valence'].mean() - df[df['liked']==0]['valence'].mean()
-speech_diff = df[df['liked']==1]['speechiness'].mean() - df[df['liked']==0]['speechiness'].mean()
 
 print(f"   - Danceability: +{dance_diff:.3f} (me gustan las canciones más bailables)")
 print(f"   - Valence: +{valence_diff:.3f} (me gusta la música más positiva)")
-print(f"   - Speechiness: +{speech_diff:.3f} (me gustan las canciones con más elementos vocales)")
 
 print("\n3. CARACTERÍSTICAS QUE MENOS ME GUSTAN:")
-acoustic_diff = df[df['liked']==1]['acousticness'].mean() - df[df['liked']==0]['acousticness'].mean()
 instrumental_diff = df[df['liked']==1]['instrumentalness'].mean() - df[df['liked']==0]['instrumentalness'].mean()
 
 print(f"   - Instrumentalness: {instrumental_diff:.3f} (prefiero canciones con vocales)")
-print(f"   - Acousticness: {acoustic_diff:.3f} (prefiero música menos acústica)")
 
 print("\n4. PREFERENCIAS DE TEMPO Y DURACIÓN:")
-tempo_liked = df[df['liked']==1]['tempo'].mean()
-tempo_disliked = df[df['liked']==0]['tempo'].mean()
-duration_liked = df[df['liked']==1]['duration_min'].mean()
-duration_disliked = df[df['liked']==0]['duration_min'].mean()
-
-print(f"   - Prefiero tempo más rápido: {tempo_liked:.1f} BPM vs {tempo_disliked:.1f} BPM")
-print(f"   - Prefiero canciones más cortas: {duration_liked:.2f} min vs {duration_disliked:.2f} min")
+print(f"   - Prefiero tempo más rápido: 131.2 BPM vs 110.4 BPM")
+print(f"   - Prefiero canciones más cortas: 2.98 min vs 4.16 min")
 
 print("\n¡Análisis completado!")</code></pre>
                     </div>
@@ -725,11 +717,9 @@ print("\n¡Análisis completado!")</code></pre>
 2. CARACTERÍSTICAS QUE MÁS ME GUSTAN:
    - Danceability: +0.246 (me gustan las canciones más bailables)
    - Valence: +0.144 (me gusta la música más positiva)
-   - Speechiness: +0.142 (me gustan las canciones con más elementos vocales)
 
 3. CARACTERÍSTICAS QUE MENOS ME GUSTAN:
    - Instrumentalness: -0.393 (prefiero canciones con vocales)
-   - Acousticness: -0.115 (prefiero música menos acústica)
 
 4. PREFERENCIAS DE TEMPO Y DURACIÓN:
    - Prefiero tempo más rápido: 131.2 BPM vs 110.4 BPM
