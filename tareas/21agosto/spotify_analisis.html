@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Análisis de Datos de Spotify</title>
+    <style type="text/css">
+        /* Jupyter Notebook styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            font-size: 14px;
+            line-height: 1.21;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .cell {
+            border: none;
+            margin-bottom: 0;
+            padding: 0;
+        }
+
+        .code_cell {
+            border: none;
+            margin-bottom: 0;
+        }
+
+        .input {
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        .input_prompt {
+            color: #303F9F;
+            border-top: 1px solid transparent;
+            min-width: 14ex;
+            padding: 7px;
+            margin: 0;
+            font-family: monospace;
+            text-align: right;
+            background-color: #f7f7f7;
+            border-right: 1px solid #cfcfcf;
+        }
+
+        .input_area {
+            flex: 1;
+            overflow: auto;
+            border: none;
+            background-color: #f7f7f7;
+            border-top: 1px solid #cfcfcf;
+            border-bottom: 1px solid #cfcfcf;
+            border-right: 1px solid #cfcfcf;
+        }
+
+        .inner_cell {
+            padding: 7px;
+        }
+
+        .output_wrapper {
+            margin-top: 5px;
+            margin-left: 0;
+            position: relative;
+        }
+
+        .output {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+        }
+
+        .output_prompt {
+            color: #d84315;
+            border-top: 1px solid transparent;
+            min-width: 14ex;
+            padding: 7px;
+            margin: 0;
+            font-family: monospace;
+            text-align: right;
+        }
+
+        .output_area {
+            flex: 1;
+            overflow: auto;
+            padding: 7px;
+        }
+
+        .output_subarea {
+            overflow-x: auto;
+            padding: 4px;
+            -webkit-box-flex: 1;
+            -moz-box-flex: 1;
+            box-flex: 1;
+            flex: 1;
+        }
+
+        .text_cell {
+            border: none;
+            margin-bottom: 0;
+        }
+
+        .text_cell_render {
+            color: #333;
+            line-height: 1.21;
+            padding: 8px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin: 20px 0 10px 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h1 { font-size: 2.25em; }
+        h2 { font-size: 1.75em; }
+        h3 { font-size: 1.5em; }
+
+        pre {
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            line-height: inherit;
+            color: inherit;
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            font-size: 13px;
+        }
+
+        .highlight {
+            background-color: transparent;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .dataframe {
+            border-collapse: collapse;
+            margin: 1em 2px;
+            border: 1px solid #aaa;
+        }
+
+        .dataframe th {
+            border: 1px solid #aaa;
+            padding: 8px;
+            background-color: #f7f7f7;
+        }
+
+        .dataframe td {
+            border: 1px solid #aaa;
+            padding: 8px;
+        }
+
+        .rendered_html {
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.21;
+            padding: 8px;
+        }
+
+        .rendered_html h1 {
+            color: #000;
+            font-size: 2.25em;
+            margin: 20px 0 10px 0;
+            padding: 0;
+        }
+
+        .rendered_html h2 {
+            color: #000;
+            font-size: 1.75em;
+            margin: 20px 0 10px 0;
+            padding: 0;
+        }
+
+        .rendered_html p {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+        }
+
+        .rendered_html strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- Título principal -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h1>Análisis de Datos de Spotify</h1>
+                    <p><strong>Nombre:</strong> Osvaldo González<br>
+                    <strong>Fecha:</strong> 21 de Agosto, 2025<br>
+                    <strong>Curso:</strong> Xideral AWS - Análisis de Datos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Importar librerías -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h2>Importar librerías necesarias</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[1]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cargar dataset -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h2>Cargar el dataset</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[2]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Cargar el archivo CSV de Spotify
+df = pd.read_csv('data.csv')
+print("Dataset cargado exitosamente!")</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>Dataset cargado exitosamente!</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[3]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Mostrar información básica del dataset
+print("Forma del dataset:", df.shape)
+print("\nPrimeras 5 filas:")
+df.head()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt">Out[3]:</div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>Forma del dataset: (195, 14)
+
+Primeras 5 filas:</pre>
+                        </div>
+                        <div class="output_subarea output_html rendered_html">
+                            <table class="dataframe">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>danceability</th>
+                                        <th>energy</th>
+                                        <th>key</th>
+                                        <th>loudness</th>
+                                        <th>mode</th>
+                                        <th>speechiness</th>
+                                        <th>acousticness</th>
+                                        <th>instrumentalness</th>
+                                        <th>liveness</th>
+                                        <th>valence</th>
+                                        <th>tempo</th>
+                                        <th>duration_ms</th>
+                                        <th>time_signature</th>
+                                        <th>liked</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>0</th>
+                                        <td>0.803</td>
+                                        <td>0.624</td>
+                                        <td>7</td>
+                                        <td>-6.764</td>
+                                        <td>0</td>
+                                        <td>0.0477</td>
+                                        <td>0.451</td>
+                                        <td>0.000734</td>
+                                        <td>0.100</td>
+                                        <td>0.628</td>
+                                        <td>95.968</td>
+                                        <td>304524</td>
+                                        <td>4</td>
+                                        <td>0</td>
+                                    </tr>
+                                    <tr>
+                                        <th>1</th>
+                                        <td>0.762</td>
+                                        <td>0.703</td>
+                                        <td>10</td>
+                                        <td>-7.951</td>
+                                        <td>0</td>
+                                        <td>0.3060</td>
+                                        <td>0.206</td>
+                                        <td>0.000000</td>
+                                        <td>0.0912</td>
+                                        <td>0.519</td>
+                                        <td>151.329</td>
+                                        <td>247178</td>
+                                        <td>4</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <th>3</th>
+                                        <td>0.722</td>
+                                        <td>0.736</td>
+                                        <td>3</td>
+                                        <td>-6.994</td>
+                                        <td>0</td>
+                                        <td>0.0585</td>
+                                        <td>0.431</td>
+                                        <td>0.000001</td>
+                                        <td>0.123</td>
+                                        <td>0.582</td>
+                                        <td>89.860</td>
+                                        <td>208920</td>
+                                        <td>4</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <th>4</th>
+                                        <td>0.787</td>
+                                        <td>0.572</td>
+                                        <td>1</td>
+                                        <td>-7.516</td>
+                                        <td>1</td>
+                                        <td>0.2220</td>
+                                        <td>0.145</td>
+                                        <td>0.000000</td>
+                                        <td>0.0753</td>
+                                        <td>0.647</td>
+                                        <td>155.117</td>
+                                        <td>179413</td>
+                                        <td>4</td>
+                                        <td>1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[4]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Información general del dataset
+df.info()</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 195 entries, 0 to 194
+Data columns (total 14 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   danceability      195 non-null    float64
+ 1   energy            195 non-null    float64
+ 2   key               195 non-null    int64  
+ 3   loudness          195 non-null    float64
+ 4   mode              195 non-null    int64  
+ 5   speechiness       195 non-null    float64
+ 6   acousticness      195 non-null    float64
+ 7   instrumentalness  195 non-null    float64
+ 8   liveness          195 non-null    float64
+ 9   valence           195 non-null    float64
+ 10  tempo             195 non-null    float64
+ 11  duration_ms       195 non-null    int64  
+ 12  time_signature    195 non-null    int64  
+ 13  liked             195 non-null    int64  
+dtypes: float64(9), int64(5)
+memory usage: 21.5 KB</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análisis Exploratorio -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h2>Análisis Exploratorio</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[5]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Verificar valores únicos en la columna 'liked'
+print("Valores únicos en 'liked':")
+print(df['liked'].value_counts())</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>Valores únicos en 'liked':
+liked
+1    100
+0     95
+Name: count, dtype: int64</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[6]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Calcular porcentajes
+total_songs = len(df)
+likes = df['liked'].sum()
+dislikes = total_songs - likes
+
+print(f"Total de canciones: {total_songs}")
+print(f"Me gusta: {likes} canciones ({likes/total_songs*100:.1f}%)")
+print(f"No me gusta: {dislikes} canciones ({dislikes/total_songs*100:.1f}%)")</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>Total de canciones: 195
+Me gusta: 100 canciones (51.3%)
+No me gusta: 95 canciones (48.7%)</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análisis de características -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h2>Análisis de características musicales</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[7]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Calcular promedios por preferencia
+print("Promedio de características por preferencia:")
+print("\nDanceability:")
+print(f"Me gusta: {df[df['liked']==1]['danceability'].mean():.3f}")
+print(f"No me gusta: {df[df['liked']==0]['danceability'].mean():.3f}")
+
+print("\nEnergy:")
+print(f"Me gusta: {df[df['liked']==1]['energy'].mean():.3f}")
+print(f"No me gusta: {df[df['liked']==0]['energy'].mean():.3f}")</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>Promedio de características por preferencia:
+
+Danceability:
+Me gusta: 0.757
+No me gusta: 0.510
+
+Energy:
+Me gusta: 0.683
+No me gusta: 0.592</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[8]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Calcular promedios para más características
+características = ['valence', 'acousticness', 'instrumentalness', 'speechiness']
+
+for característica in características:
+    me_gusta = df[df['liked']==1][característica].mean()
+    no_me_gusta = df[df['liked']==0][característica].mean()
+    diferencia = me_gusta - no_me_gusta
+    
+    print(f"\n{característica.capitalize()}:")
+    print(f"Me gusta: {me_gusta:.3f}")
+    print(f"No me gusta: {no_me_gusta:.3f}")
+    print(f"Diferencia: {diferencia:+.3f}")</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>
+Valence:
+Me gusta: 0.564
+No me gusta: 0.420
+Diferencia: +0.144
+
+Acousticness:
+Me gusta: 0.263
+No me gusta: 0.378
+Diferencia: -0.115
+
+Instrumentalness:
+Me gusta: 0.001
+No me gusta: 0.394
+Diferencia: -0.393
+
+Speechiness:
+Me gusta: 0.218
+No me gusta: 0.076
+Diferencia: +0.142</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Análisis de Tempo -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h2>Análisis de Tempo y Duración</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[9]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code># Convertir duración a minutos para mejor comprensión
+df['duration_min'] = df['duration_ms'] / 60000
+
+print("Análisis de duración:")
+print(f"Duración promedio (me gusta): {df[df['liked']==1]['duration_min'].mean():.2f} minutos")
+print(f"Duración promedio (no me gusta): {df[df['liked']==0]['duration_min'].mean():.2f} minutos")
+
+print("\nAnálisis de tempo:")
+print(f"Tempo promedio (me gusta): {df[df['liked']==1]['tempo'].mean():.1f} BPM")
+print(f"Tempo promedio (no me gusta): {df[df['liked']==0]['tempo'].mean():.1f} BPM")</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>Análisis de duración:
+Duración promedio (me gusta): 2.98 minutos
+Duración promedio (no me gusta): 4.16 minutos
+
+Análisis de tempo:
+Tempo promedio (me gusta): 131.2 BPM
+Tempo promedio (no me gusta): 110.4 BPM</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conclusiones -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <h2>Conclusiones</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border-box-sizing code_cell rendered">
+            <div class="input">
+                <div class="input_prompt">In&nbsp;[10]:</div>
+                <div class="input_area">
+                    <div class="inner_cell">
+                        <pre><code>print("=== CONCLUSIONES DEL ANÁLISIS ===")
+print("\n1. DISTRIBUCIÓN GENERAL:")
+print(f"   - Analicé {len(df)} canciones")
+print(f"   - {df['liked'].sum()} me gustan ({df['liked'].sum()/len(df)*100:.1f}%)")
+print(f"   - {len(df)-df['liked'].sum()} no me gustan ({(len(df)-df['liked'].sum())/len(df)*100:.1f}%)")
+
+print("\n2. CARACTERÍSTICAS QUE MÁS ME GUSTAN:")
+dance_diff = df[df['liked']==1]['danceability'].mean() - df[df['liked']==0]['danceability'].mean()
+valence_diff = df[df['liked']==1]['valence'].mean() - df[df['liked']==0]['valence'].mean()
+speech_diff = df[df['liked']==1]['speechiness'].mean() - df[df['liked']==0]['speechiness'].mean()
+
+print(f"   - Danceability: +{dance_diff:.3f} (me gustan las canciones más bailables)")
+print(f"   - Valence: +{valence_diff:.3f} (me gusta la música más positiva)")
+print(f"   - Speechiness: +{speech_diff:.3f} (me gustan las canciones con más elementos vocales)")
+
+print("\n3. CARACTERÍSTICAS QUE MENOS ME GUSTAN:")
+acoustic_diff = df[df['liked']==1]['acousticness'].mean() - df[df['liked']==0]['acousticness'].mean()
+instrumental_diff = df[df['liked']==1]['instrumentalness'].mean() - df[df['liked']==0]['instrumentalness'].mean()
+
+print(f"   - Instrumentalness: {instrumental_diff:.3f} (prefiero canciones con vocales)")
+print(f"   - Acousticness: {acoustic_diff:.3f} (prefiero música menos acústica)")
+
+print("\n4. PREFERENCIAS DE TEMPO Y DURACIÓN:")
+tempo_liked = df[df['liked']==1]['tempo'].mean()
+tempo_disliked = df[df['liked']==0]['tempo'].mean()
+duration_liked = df[df['liked']==1]['duration_min'].mean()
+duration_disliked = df[df['liked']==0]['duration_min'].mean()
+
+print(f"   - Prefiero tempo más rápido: {tempo_liked:.1f} BPM vs {tempo_disliked:.1f} BPM")
+print(f"   - Prefiero canciones más cortas: {duration_liked:.2f} min vs {duration_disliked:.2f} min")
+
+print("\n¡Análisis completado!")</code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="output_wrapper">
+                <div class="output">
+                    <div class="output_prompt"></div>
+                    <div class="output_area">
+                        <div class="output_subarea output_text output_result">
+                            <pre>=== CONCLUSIONES DEL ANÁLISIS ===
+
+1. DISTRIBUCIÓN GENERAL:
+   - Analicé 195 canciones
+   - 100 me gustan (51.3%)
+   - 95 no me gustan (48.7%)
+
+2. CARACTERÍSTICAS QUE MÁS ME GUSTAN:
+   - Danceability: +0.246 (me gustan las canciones más bailables)
+   - Valence: +0.144 (me gusta la música más positiva)
+   - Speechiness: +0.142 (me gustan las canciones con más elementos vocales)
+
+3. CARACTERÍSTICAS QUE MENOS ME GUSTAN:
+   - Instrumentalness: -0.393 (prefiero canciones con vocales)
+   - Acousticness: -0.115 (prefiero música menos acústica)
+
+4. PREFERENCIAS DE TEMPO Y DURACIÓN:
+   - Prefiero tempo más rápido: 131.2 BPM vs 110.4 BPM
+   - Prefiero canciones más cortas: 2.98 min vs 4.16 min
+
+¡Análisis completado!</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del proyecto -->
+        <div class="cell border-box-sizing text_cell rendered">
+            <div class="inner_cell">
+                <div class="text_cell_render rendered_html">
+                    <hr>
+                    <p><strong>Proyecto realizado por:</strong> Osvaldo González<br>
+                    <strong>Curso:</strong> Xideral AWS - Programa de Análisis de Datos<br>
+                    <strong>Fecha:</strong> Agosto 2025</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>
