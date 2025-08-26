@@ -17,17 +17,36 @@ st.markdown("---")
 
 # Función para cargar datos
 @st.cache_data
-def load_data():
-    """Carga los datos desde el archivo CSV local"""
+def load_data(file_path='data.csv'):
+    """Carga los datos desde el archivo CSV"""
     try:
-        df = pd.read_csv('data.csv')
+        df = pd.read_csv(file_path)
         return df
     except FileNotFoundError:
-        st.error("No se encontró el archivo data.csv en el directorio actual.")
+        st.error(f"No se encontró el archivo {file_path}.")
+        return None
+    except Exception as e:
+        st.error(f"Error al cargar el archivo: {str(e)}")
         return None
 
+# Sidebar para cargar archivos
+st.sidebar.header("📁 Cargar Datos")
+uploaded_file = st.sidebar.file_uploader(
+    "Selecciona un archivo CSV de Spotify",
+    type=['csv'],
+    help="Sube un archivo CSV con datos de características musicales de Spotify"
+)
+
 # Cargar datos
-df = load_data()
+df = None
+if uploaded_file is not None:
+    df = load_data(uploaded_file)
+    st.sidebar.success("Archivo cargado exitosamente!")
+else:
+    # Usar archivo por defecto si existe
+    df = load_data('data.csv')
+    if df is not None:
+        st.sidebar.info("Usando archivo data.csv por defecto")
 
 if df is not None:
     # Sidebar para filtros
